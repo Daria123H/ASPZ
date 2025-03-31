@@ -214,58 +214,38 @@ main() --&gt; foo() --&gt; bar() --&gt; bar_is_now_closed() --&gt; pause()
 
 Системний виклик pause() – це приклад блокуючого виклику. Він переводить викликаючий процес у сплячий режим, очікуючи (або блокуючи) сигнал. У цьому випадку процес блокується, поки не отримає будь-який сигнал.
 
-#include &lt;stdio.h&gt;
-
-#include &lt;stdlib.h&gt;
-
-#include &lt;unistd.h&gt;
-
-#include &lt;sys/types.h&gt;
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 #define MSG &quot;In function %20s; &amp;localvar = %p\n&quot;
 
 static void bar_is_now_closed(void) {
+    int localvar = 5;
+    printf(MSG, FUNCTION, &localvar);
+    printf("\n Now blocking on pause()...\n");
 
-int localvar = 5;
-
-printf(MSG, __FUNCTION__, &amp;localvar);
-
-printf(&quot;\n Now blocking on pause()...\n&quot;);
-
-pause();
-
+    pause();
 }
 
 static void bar(void) {
-
-int localvar = 5;
-
-printf(MSG, __FUNCTION__, &amp;localvar);
-
-bar_is_now_closed();
-
+    int localvar = 5;
+    printf(MSG, FUNCTION, &localvar);
+    bar_is_now_closed();
 }
 
 static void foo(void) {
-
-int localvar = 5;
-
-printf(MSG, __FUNCTION__, &amp;localvar);
-
-bar();
-
+    int localvar = 5;
+    printf(MSG, FUNCTION, &localvar);
+    bar();
 }
 
 int main(int argc, char **argv) {
-
-int localvar = 5;
-
-printf(MSG, __FUNCTION__, &amp;localvar);
-
-foo();
-
-exit(EXIT_SUCCESS);
-
+    int localvar = 5;
+    printf(MSG, FUNCTION, &localvar);
+    foo();
+    exit(EXIT_SUCCESS);
 }
 
 Тепер відкрийте GDB. У ньому підключіться (attach) до процесу (в наведеному прикладі PID = 24957) і дослідіть стек за допомогою команди backtrace (bt):
@@ -314,76 +294,15 @@ gstack — це, по суті, оболонковий скрипт (wrapper she
 
 •	Ручний аналіз через GDB (GNU Debugger)
 
-Створила файл з запропонованим кодом. 
-
-#include <stdio.h>
-
-#include <stdlib.h>
-
-#include <unistd.h>
-
-#include <sys/types.h>
-
-#define MSG "In function %20s; &localvar = %p\n"
-
-static void bar_is_now_closed(void) {
-
-    int localvar = 5;
-    
-    printf(MSG, __FUNCTION__, &localvar);
-    
-    printf("\n Now blocking on pause()...\n");
-    
-    pause();
-    
-}
-
-static void bar(void) {
-
-    int localvar = 5;
-    
-    printf(MSG, __FUNCTION__, &localvar);
-    
-    bar_is_now_closed();
-    
-}
-
-static void foo(void) {
-
-    int localvar = 5;
-    
-    printf(MSG, __FUNCTION__, &localvar);
-    
-    bar();
-    
-}
-
-int main(int argc, char **argv) {
-
-    int localvar = 5;
-    
-    printf(MSG, __FUNCTION__, &localvar);
-    
-    foo();
-    
-    exit(EXIT_SUCCESS);
-    
-}
+### Створила файл з запропонованим [кодом](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task4/PR24.c).
 
 Компілюю код:
 
 clang -Wall -g PR24.c -o PR24
 
-Результат: 
-In function                      main; & localvar = 0x820f Of 18c
+### Результат: 
 
-In function                      foo; &localvar = 0x820f Of 16c
-
-In function                      bar; & localvar = 0x820f Of 14c
-
-In function                      bar_is_now_closed; &localvar = 0x820f Of 12c
-
-Now blocking on pause()...
+![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task4/PR24.png)
 
 Далі аналізую стек за допомогою gdb. Запускаємо наступним чином:
 
@@ -391,37 +310,11 @@ gdb –quiet
 
 (gdb) attach 24957
 
-Результат: 
-
-Attaching to process 1195
-
-Reading symbols from /home/dasha/PR24...
-
-Reading symbols from /lib/libc.so.7...
-
-(No debugging symbols found in /lib/libc.so.7)
-
-Reading symbols from /libexec/ld-elf.so.1...
-
-(No debugging symbols found in /libexec/ld-elf.so.1) 0x000000082331977a in sigsuspend () from /lib/libc.so.7
-
-Ввожу:
-
 (gdb) bt
 
-Результат:
+### Результат:
 
-#O                                               0x000000082331977a in _sigsuspend () from /lib/libc.so.?
-
-#1                                                0x000000082328fc35 in pause () from /lib/libc.so.?
-
-#2                                                0x00000000002018e4 in bar_is_now_closed () at PR24.c:12
-
-#3                                                0x0000000000201893 in bar () at PR24.c:18
-
-#4                                                0x0000000000201853 in foo () at PR24.c:24
-
-#5                                                0x0000000000201811 in main (argc=1, argv=0x820fc1fd0) at PR24.c:30
+![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task4/PR24_1.png)
 
 Зараз розшифрую вивід:
 
