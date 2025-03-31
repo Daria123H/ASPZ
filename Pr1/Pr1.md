@@ -13,7 +13,7 @@
 
 # Виконання
 
-[Код](https://github.com/Daria123H/ASPZ/blob/main/Pr1/task1/PR1.c)
+## [Переглянути код](https://github.com/Daria123H/ASPZ/blob/main/Pr1/task1/PR1.c)
 
 Мій код дозволяє користувачу розв’язати квадратні рівняння виду:
 
