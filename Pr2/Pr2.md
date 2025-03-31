@@ -141,6 +141,20 @@ BSS значно збільшився з 1856 до 5856. Це пояснюєть
 
 # Завдання 2.3
 
+Скомпілюйте й запустіть тестову програму, щоб визначити приблизне розташування стека у вашій системі:
+
+#include <stdio.h>
+
+int main() {
+        int i;
+        printf(&quot;The stack top is near %p\n&quot;, &amp;i);
+        return 0;
+}
+
+Знайдіть розташування сегментів даних і тексту, а також купи всередині сегмента даних, оголосіть змінні, які будуть поміщені в ці сегменти, і виведіть їхні адреси. Збільшіть розмір стека, викликавши функцію й оголосивши кілька великих локальних масивів. Яка зараз адреса вершини стека?
+
+## Виконання 
+
 Перш за все компілюємо запропонований [код](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task3/PR23.c).
 
 ### У результаті чого:
@@ -156,3 +170,269 @@ BSS значно збільшився з 1856 до 5856. Це пояснюєть
 ![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task3/PR23_1.png)
 
 У  Text segment зберігається код програми. Адреса 0x2017a0 вказує на початок функції function. Data segment, initialized зберігає глобальні змінні, які мають ініціалізовані значення. global_var розташований за адресою 0x203aa8. У BSS segment містяться глобальні змінні, які не були ініціалізовані. var знаходиться за адресою 0x203b00. У static знаходяться статичні змінні, зокрема static_var, за адресою 0x203aac. Heap використовується для динамічного виділення пам'яті. У нашому випадку heap_var отримала адресу 0x1cddac08008. Stack це місце зберігання локальних змінних. local_var має адресу 0x820356148.
+
+# Завдання 2.4
+
+Ваше завдання – дослідити стек процесу або пригадати, як це робиться. Ви можете:
+
+    ● Автоматично за допомогою утиліти gstack.
+    
+    ● Вручну за допомогою налагоджувача GDB.
+    
+Користувачі Ubuntu можуть зіткнутися з проблемою: на момент написання (Ubuntu 18.04) gstack, схоже, не був доступний (альтернативою може бути pstack). Якщо gstack не працює, використовуйте другий метод – через
+GDB, як показано нижче. Спочатку подивіться на стек за допомогою gstack(1). Нижче наведений приклад стека bash (аргументом команди є PID процесу): $ gstack 14654
+
+#0 0x00007f359ec7ee7a in waitpid () from /lib64/libc.so.6
+
+#1 0x000056474b4b41d9 in waitchild.isra ()
+
+#2 0x000056474b4b595d in wait_for ()
+
+#3 0x000056474b4a5033 in execute_command_internal ()
+
+#4 0x000056474b4a5c22 in execute_command ()
+
+#5 0x000056474b48f252 in reader_loop ()
+
+#6 0x000056474b48dd32 in main ()
+
+$
+
+Розбір стека:
+
+    ● Номер кадру стека відображається ліворуч перед символом #.
+    
+    ● Кадр #0 – це найнижчий кадр. Читайте стек знизу вверх (тобто від main() – кадр #6 – до waitpid() – кадр #0).
+    
+    ● Якщо процес багатопотоковий, gstack покаже стек кожного потоку окремо.
+    
+Аналіз стека в режимі користувача через GDB
+
+Щоб переглянути стек процесу вручну, використовуйте GDB, приєднавшись до процесу. Нижче наведена невелика тестова програма на C, що виконує кілька вкладених викликів функцій. Граф викликів виглядає так:
+
+main() --&gt; foo() --&gt; bar() --&gt; bar_is_now_closed() --&gt; pause()
+
+Системний виклик pause() – це приклад блокуючого виклику. Він переводить викликаючий процес у сплячий режим, очікуючи (або блокуючи) сигнал. У цьому випадку процес блокується, поки не отримає будь-який сигнал.
+
+#include &lt;stdio.h&gt;
+
+#include &lt;stdlib.h&gt;
+
+#include &lt;unistd.h&gt;
+
+#include &lt;sys/types.h&gt;
+
+#define MSG &quot;In function %20s; &amp;localvar = %p\n&quot;
+
+static void bar_is_now_closed(void) {
+
+int localvar = 5;
+
+printf(MSG, __FUNCTION__, &amp;localvar);
+
+printf(&quot;\n Now blocking on pause()...\n&quot;);
+
+pause();
+
+}
+
+static void bar(void) {
+
+int localvar = 5;
+
+printf(MSG, __FUNCTION__, &amp;localvar);
+
+bar_is_now_closed();
+
+}
+
+static void foo(void) {
+
+int localvar = 5;
+
+printf(MSG, __FUNCTION__, &amp;localvar);
+
+bar();
+
+}
+
+int main(int argc, char **argv) {
+
+int localvar = 5;
+
+printf(MSG, __FUNCTION__, &amp;localvar);
+
+foo();
+
+exit(EXIT_SUCCESS);
+
+}
+
+Тепер відкрийте GDB. У ньому підключіться (attach) до процесу (в наведеному прикладі PID = 24957) і дослідіть стек за допомогою команди backtrace (bt):
+
+$ gdb --quiet
+
+(gdb) attach 24957
+
+Attaching to process 24957
+
+Reading symbols from &lt;...&gt;/hspl/unit2/stacker...done.
+
+Reading symbols from /lib64/libc.so.6...Reading symbols from
+
+/usr/lib/debug/usr/lib64/libc-2.26.so.debug...done.
+
+done.
+
+Reading symbols from /lib64/ld-linux-x86-64.so.2...Reading symbols
+
+...
+
+(gdb) bt
+
+...
+
+Примітка: В Ubuntu, через питання безпеки, GDB не дозволяє підключатися до довільного процесу. Це можна обійти, запустивши GDB від імені користувача root.
+
+Аналіз того ж процесу через gstack
+
+$ gstack 24957
+
+...
+
+gstack — це, по суті, оболонковий скрипт (wrapper shell script), який неінтерактивно викликає GDB і запускає команду backtrace, яку ви щойно використали.
+
+Завдання: Ознайомтеся з виводом gstack і порівняйте його з GDB.
+
+## Виконання
+
+Стек — це структура даних, у якій зберігається інформація про виклики функцій під час виконання програми. Він працює за принципом "останній прийшов — перший пішов".
+
+У цьому завданні було використано дві методики аналізу стека процесу:
+
+•	Автоматичний аналіз за допомогою команди gstack
+
+•	Ручний аналіз через GDB (GNU Debugger)
+
+Створила файл з запропонованим кодом. 
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+#include <unistd.h>
+
+#include <sys/types.h>
+
+#define MSG "In function %20s; &localvar = %p\n"
+
+static void bar_is_now_closed(void) {
+
+    int localvar = 5;
+    
+    printf(MSG, __FUNCTION__, &localvar);
+    
+    printf("\n Now blocking on pause()...\n");
+    
+    pause();
+    
+}
+
+static void bar(void) {
+
+    int localvar = 5;
+    
+    printf(MSG, __FUNCTION__, &localvar);
+    
+    bar_is_now_closed();
+    
+}
+
+static void foo(void) {
+
+    int localvar = 5;
+    
+    printf(MSG, __FUNCTION__, &localvar);
+    
+    bar();
+    
+}
+
+int main(int argc, char **argv) {
+
+    int localvar = 5;
+    
+    printf(MSG, __FUNCTION__, &localvar);
+    
+    foo();
+    
+    exit(EXIT_SUCCESS);
+    
+}
+
+Компілюю код:
+
+clang -Wall -g PR24.c -o PR24
+
+Результат: 
+In function                      main; & localvar = 0x820f Of 18c
+
+In function                      foo; &localvar = 0x820f Of 16c
+
+In function                      bar; & localvar = 0x820f Of 14c
+
+In function                      bar_is_now_closed; &localvar = 0x820f Of 12c
+
+Now blocking on pause()...
+
+Далі аналізую стек за допомогою gdb. Запускаємо наступним чином:
+
+gdb –quiet
+
+(gdb) attach 24957
+
+Результат: 
+
+Attaching to process 1195
+
+Reading symbols from /home/dasha/PR24...
+
+Reading symbols from /lib/libc.so.7...
+
+(No debugging symbols found in /lib/libc.so.7)
+
+Reading symbols from /libexec/ld-elf.so.1...
+
+(No debugging symbols found in /libexec/ld-elf.so.1) 0x000000082331977a in sigsuspend () from /lib/libc.so.7
+
+Ввожу:
+
+(gdb) bt
+
+Результат:
+
+#O                                               0x000000082331977a in _sigsuspend () from /lib/libc.so.?
+
+#1                                                0x000000082328fc35 in pause () from /lib/libc.so.?
+
+#2                                                0x00000000002018e4 in bar_is_now_closed () at PR24.c:12
+
+#3                                                0x0000000000201893 in bar () at PR24.c:18
+
+#4                                                0x0000000000201853 in foo () at PR24.c:24
+
+#5                                                0x0000000000201811 in main (argc=1, argv=0x820fc1fd0) at PR24.c:30
+
+Зараз розшифрую вивід:
+
+#0 – найнижчий кадр (процес заблокований у sigsuspend()).
+
+#1 – функція pause() (чекає на сигнал).
+
+#2 – виклик bar_is_now_closed().
+
+#3 – виклик bar().
+
+#4 – виклик foo().
+
+#5 – виклик main().
