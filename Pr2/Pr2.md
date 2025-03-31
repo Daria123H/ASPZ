@@ -215,37 +215,57 @@ main() --&gt; foo() --&gt; bar() --&gt; bar_is_now_closed() --&gt; pause()
 Системний виклик pause() – це приклад блокуючого виклику. Він переводить викликаючий процес у сплячий режим, очікуючи (або блокуючи) сигнал. У цьому випадку процес блокується, поки не отримає будь-який сигнал.
 
 #include <stdio.h>
+
 #include <stdlib.h>
+
 #include <unistd.h>
+
 #include <sys/types.h>
 
-#define MSG &quot;In function %20s; &amp;localvar = %p\n&quot;
+#define MSG "In function %20s; &localvar = %p\n"
 
 static void bar_is_now_closed(void) {
-    int localvar = 5;
-    printf(MSG, FUNCTION, &localvar);
-    printf("\n Now blocking on pause()...\n");
 
+    int localvar = 5;
+    
+    printf(MSG, __FUNCTION__, &localvar);
+    
+    printf("\n Now blocking on pause()...\n");
+    
     pause();
+    
 }
 
 static void bar(void) {
+
     int localvar = 5;
-    printf(MSG, FUNCTION, &localvar);
+    
+    printf(MSG, __FUNCTION__, &localvar);
+    
     bar_is_now_closed();
+    
 }
 
 static void foo(void) {
+
     int localvar = 5;
-    printf(MSG, FUNCTION, &localvar);
+    
+    printf(MSG, __FUNCTION__, &localvar);
+    
     bar();
+    
 }
 
 int main(int argc, char **argv) {
+
     int localvar = 5;
-    printf(MSG, FUNCTION, &localvar);
+    
+    printf(MSG, __FUNCTION__, &localvar);
+    
     foo();
+    
     exit(EXIT_SUCCESS);
+    
 }
 
 Тепер відкрийте GDB. У ньому підключіться (attach) до процесу (в наведеному прикладі PID = 24957) і дослідіть стек за допомогою команди backtrace (bt):
@@ -329,3 +349,33 @@ gdb –quiet
 #4 – виклик foo().
 
 #5 – виклик main().
+
+# Завдання 2.5
+
+Відомо, що при виклику процедур і поверненні з них процесор використовує стек.Чи можна в такій схемі обійтися без лічильника команд (IP), використовуючи замість нього вершину стека? Обґрунтуйте свою відповідь та наведіть приклади.
+
+## Виконання
+
+Створимо [код на С](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task5/PR25.c) для демонстрації стеку під час викликів функцій. 
+
+### Далі компілюємо і виводимо результат:
+
+![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task5/PR2_5.png)
+
+Далі проведемо аналіз стеку за допомогою GDB
+
+gdb ./PR2_5
+
+break function_a
+
+run
+
+bt    
+
+info registers
+
+si    
+
+### Вивід
+
+![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task5/PR2_5_1.png)
