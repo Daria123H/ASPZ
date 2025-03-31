@@ -214,59 +214,59 @@ main() --&gt; foo() --&gt; bar() --&gt; bar_is_now_closed() --&gt; pause()
 
 Системний виклик pause() – це приклад блокуючого виклику. Він переводить викликаючий процес у сплячий режим, очікуючи (або блокуючи) сигнал. У цьому випадку процес блокується, поки не отримає будь-який сигнал.
 
-#include <stdio.h>
+    #include <stdio.h>
 
-#include <stdlib.h>
+    #include <stdlib.h>
 
-#include <unistd.h>
+    #include <unistd.h>
 
-#include <sys/types.h>
+    #include <sys/types.h>
 
-#define MSG "In function %20s; &localvar = %p\n"
+    #define MSG "In function %20s; &localvar = %p\n"
 
-static void bar_is_now_closed(void) {
+        static void bar_is_now_closed(void) {
 
-    int localvar = 5;
+            int localvar = 5;
     
-    printf(MSG, __FUNCTION__, &localvar);
+            printf(MSG, __FUNCTION__, &localvar);
     
-    printf("\n Now blocking on pause()...\n");
+            printf("\n Now blocking on pause()...\n");
     
-    pause();
+            pause();
     
-}
+        }
 
-static void bar(void) {
+        static void bar(void) {
 
-    int localvar = 5;
+            int localvar = 5;
     
-    printf(MSG, __FUNCTION__, &localvar);
+            printf(MSG, __FUNCTION__, &localvar);
+        
+            bar_is_now_closed();
     
-    bar_is_now_closed();
-    
-}
+        }
 
-static void foo(void) {
+        static void foo(void) {
 
-    int localvar = 5;
+            int localvar = 5;
     
-    printf(MSG, __FUNCTION__, &localvar);
+            printf(MSG, __FUNCTION__, &localvar);
     
-    bar();
+            bar();
     
-}
+        }
 
-int main(int argc, char **argv) {
+            int main(int argc, char **argv) {
 
-    int localvar = 5;
+            int localvar = 5;
     
-    printf(MSG, __FUNCTION__, &localvar);
+            printf(MSG, __FUNCTION__, &localvar);
     
-    foo();
+            foo();
     
-    exit(EXIT_SUCCESS);
+            exit(EXIT_SUCCESS);
     
-}
+        }
 
 Тепер відкрийте GDB. У ньому підключіться (attach) до процесу (в наведеному прикладі PID = 24957) і дослідіть стек за допомогою команди backtrace (bt):
 
@@ -318,7 +318,7 @@ gstack — це, по суті, оболонковий скрипт (wrapper she
 
 Компілюю код:
 
-clang -Wall -g PR24.c -o PR24
+    clang -Wall -g PR24.c -o PR24
 
 ### Результат: 
 
@@ -326,11 +326,11 @@ clang -Wall -g PR24.c -o PR24
 
 Далі аналізую стек за допомогою gdb. Запускаємо наступним чином:
 
-gdb –quiet
+    gdb –quiet
 
-(gdb) attach 24957
+    (gdb) attach 24957
 
-(gdb) bt
+    (gdb) bt
 
 ### Результат:
 
@@ -364,17 +364,17 @@ gdb –quiet
 
 Далі проведемо аналіз стеку за допомогою GDB
 
-gdb ./PR2_5
+    gdb ./PR2_5
 
-break function_a
+    break function_a
 
-run
+    run
 
-bt    
+    bt    
 
-info registers
+    info registers
 
-si    
+    si    
 
 ### Вивід
 
