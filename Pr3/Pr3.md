@@ -3,8 +3,7 @@
 Запустіть Docker-контейнер і поекспериментуйте з максимальним лімітом ресурсів відкритих файлів. Для цього виконайте команди у вказаному порядку:
 
       $ ulimit -n
-  
-  $ ulimit -aS | grep "open files"
+      $ ulimit -aS | grep "open files"
   
   $ ulimit -aH | grep "open files"
   
