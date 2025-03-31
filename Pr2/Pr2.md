@@ -62,7 +62,7 @@ ls -l PR22
 
 Ця команда показує список файлів у поточній папці  з детальною інформацією. 
 
-## Результат:
+### Результат:
 
 ![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/PR22.png)
 
@@ -74,7 +74,7 @@ size PR22
  
 Розмір сегментів – це характеристика файлів або даних, що вказує, як вони розподілені та використовують дисковий простір.
 
-## У результаті вивід буде наступний: 
+### У результаті вивід буде наступний: 
 
 ![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/segments.png)
 
@@ -90,23 +90,23 @@ DEC — це загальний розмір цих сегментів у дес
 
 HEX  — те саме, тільки у шістнадцятковій системі числення.
 
-Наступним кроком в цьому завданні було оголошення масиву. [Код](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/PR22_1.c) вже мав наступний вигляд: 
+### Наступним кроком в цьому завданні було оголошення масиву. [Код](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/PR22_1.c) вже мав наступний вигляд: 
 
 Повторюємо вимірювання і у результаті маємо вивід:
 
-![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/with%20global%20array_1.png)
+### ![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/with%20global%20array_1.png)
 
 Та
 
-![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/with%20global%20array.png)
+### ![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/with%20global%20array.png)
 
 BSS значно збільшився з 1856 до 5856. Це пояснюється тим, що масив оголошено, але не ініціалізовано. Він не займає місце у виконуваному файлі, але програма резервує під нього пам’ять під час виконання.
 
 Третім кроком було надання значення масиву. 
 
-[Код](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/PR22_2.c):
+### [Код](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/PR22_2.c):
 
-Результат:
+### Результат:
 
 ![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/PR22_2.png)
 
@@ -114,9 +114,9 @@ BSS значно збільшився з 1856 до 5856. Це пояснюєть
 
 Наступний етап це оголошення великого масиву в локальну функцію та другого великого локального масиву з ініціалізатором.
 
-[Код](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/PR22_3.c):
+### [Код](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/PR22_3.c):
 
-Результат: 
+### Результат: 
 
 ![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr2/task2/PR22_3.png)
 
