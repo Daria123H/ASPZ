@@ -70,5 +70,9 @@
 
 # Результат
 
+## Квадратне рівняння
 ![Квадратне рівняння](https://github.com/Daria123H/ASPZ/blob/main/Pr1/task1/square.png)
-![Кубічне рівняння] (https://github.com/Daria123H/ASPZ/blob/main/Pr1/task1/cube.png)
+
+## Кубічне рівняння
+![Кубічне рівняння](https://github.com/Daria123H/ASPZ/blob/main/Pr1/task1/cube.png)
+
