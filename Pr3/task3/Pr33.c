@@ -8,7 +8,7 @@
 
 #include <sys/stat.h>
 
-#define FILENAME "dice_rolls.txt"  
+#define FILENAME "PR3_31.txt"  
 
 #define MAX_FILE_SIZE 1024   
 
@@ -32,7 +32,7 @@ int main() {
     
     if (fd == -1) {
     
-        perror("Помилка відкриття файлу");
+        perror("Trouble to open file");
         
         return EXIT_FAILURE;
         
@@ -42,7 +42,7 @@ int main() {
     
         if (stat(FILENAME, &file_stat) == -1) {
         
-            perror("Помилка отримання розміру файлу");
+            perror("Trouble to take size file");
             
             close(fd);
             
@@ -52,7 +52,7 @@ int main() {
         
         if (file_stat.st_size >= MAX_FILE_SIZE) {
         
-            printf("Досягнуто максимального розміру файлу (%d байт). Завершення роботи.\n", MAX_FILE_SIZE);
+            printf("The maximum file size has been reached. End of work.\n", MAX_FILE_SIZE);
             
             break;
             
@@ -68,7 +68,7 @@ int main() {
         
         if (file_stat.st_size + pos > MAX_FILE_SIZE) {
         
-            printf("Запис перевищить ліміт файлу, припиняємо роботу.\n");
+            printf("If the recording exceeds the file limit, we stop working.\n");
             
             break;
             
@@ -76,7 +76,7 @@ int main() {
         
         if (write(fd, buffer, pos) == -1) {
         
-            perror("Помилка запису у файл");
+            perror("Trouble to recording in file");
             
             close(fd);
             
@@ -84,7 +84,7 @@ int main() {
             
         }
         
-        printf("Записано %d кидків\n", BATCH_SIZE);
+        printf("Write %d rolls\n", BATCH_SIZE);
         
     }
     
