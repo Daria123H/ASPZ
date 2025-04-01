@@ -218,6 +218,8 @@ Docker — це інструмент, який допомагає запуска
 Для початку перевірила поточні ліміти
 
             Ulimit -a
+            
+![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr3/task3_21/PR3_21_1.png) 
 
 Далі обмежила кількість відкритих файлів
 
@@ -251,12 +253,18 @@ Docker — це інструмент, який допомагає запуска
 
             dd if=/dev/zero of=/dev/null bs=1M count=300
 
+![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr3/task3_21/PR3_21_2.png) 
+
 Процес завершився помилкою через обмеження пам’яті тому rctl працює
 
 Далі перевірила чи є обмеження на CPU тому запустила важкий процес 
 
             openssl speed
 
+![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr3/task3_21/PR3_21_3.png) 
+
 Перевірила, чи не перевищує використання CPU 50%:
 
             top -P.
+
+![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr3/task3_21/PR3_21_4.png) 
