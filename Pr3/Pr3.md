@@ -140,6 +140,7 @@ Docker — це інструмент, який допомагає запуска
 
 Напишіть програму для копіювання одного іменованого файлу в інший. Імена файлів передаються у вигляді аргументів.
 Програма має:
+
             ● перевіряти, чи передано два аргументи, інакше виводити "Program need two arguments";
 
             ● перевіряти доступність першого файлу для читання, інакше виводити "Cannot open file .... for reading";
@@ -178,9 +179,11 @@ Docker — це інструмент, який допомагає запуска
 
             python3 PR3_5.py file_not_exist.txt file2.txt
 
-![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr3/task5/PR35_4.png) 
-
             python3 PR3_5.py file1.txt /root/protected_file.txt  
+            
+![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr3/task5/PR3_555.png) 
+![Результат](https://github.com/Daria123H/ASPZ/blob/main/Pr3/task5/PR3_5555.png) 
+
 
 # Завдання 3.6
 
