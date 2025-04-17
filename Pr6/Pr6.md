@@ -14,9 +14,9 @@ ASan- це вбудований у компілятор інструмент (я
 
 #### ASan компіляція (Clang):
 
-clang -fsanitize=address -g PR6_11.c -o PR6_11
+    clang -fsanitize=address -g PR6_11.c -o PR6_11
 
-./big
+    ./big
 
 ## Результат
 
@@ -24,9 +24,9 @@ clang -fsanitize=address -g PR6_11.c -o PR6_11
 
 #### Valgrind запуск:
 
-cc PR6_11.c -o PR6_11
+    cc PR6_11.c -o PR6_11
 
-valgrind ./ PR6_11
+    valgrind ./ PR6_11
 
 ## Результат
 
@@ -44,9 +44,9 @@ ASan працює набагато швидше, і краще підходит�
 
 #### ASan компіляція:
 
-clang -fsanitize=address -g ci.c -o ci
+    clang -fsanitize=address -g ci.c -o ci
 
-./ci
+    ./ci
 
 ## Результат
 
