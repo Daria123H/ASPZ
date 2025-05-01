@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+float random_float_0_1() {
+    return (float)rand() / (float)RAND_MAX;
+}
+
+float random_float_0_n(float n) {
+    return random_float_0_1() * n;
+}
+
+int main() {
+
+    srand((unsigned int)time(NULL));
+
+    int i;
+    float n;
+
+    printf("Enter the value of n(дійсне число): ");
+    scanf("%f", &n);
+
+    printf("\n10 random numbers in the range [0.0, 1.0]:\n");
+    for (i = 0; i < 10; ++i) {
+        printf("%f\n", random_float_0_1());
+    }
+
+    printf("\n10 random numbers in the range [0.0, %.2f]:\n", n);
+    for (i = 0; i < 10; ++i) {
+        printf("%f\n", random_float_0_n(n));
+    }
+
+    return 0;
+}
