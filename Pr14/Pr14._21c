@@ -1,0 +1,16 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+void* f(void* a) {
+    sleep(2);
+    printf("Thread %d done\n", *(int*)a);
+    return 0;
+}
+
+int main() {
+    pthread_t t[5];
+    int i[5] = {1,2,3,4,5};
+    for(int n=0; n<5; n++) pthread_create(&t[n],0,f,&i[n]);
+    for(int n=0; n<5; n++) pthread_join(t[n],0);
+}
